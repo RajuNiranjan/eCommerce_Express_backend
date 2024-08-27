@@ -3,6 +3,7 @@ import './utils/db.js'
 import { ENV_VAR } from './config/envVar.js'
 import cors from 'cors'
 import { AuthRouter } from './routers/auth.router.js'
+import { UserRouter } from './routers/user.route.js'
 
 
 const app = express()
@@ -24,5 +25,6 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', AuthRouter)
+app.use('/api/user', UserRouter)
 
 app.listen(PORT, () => console.log(`server is running at port number: ${PORT}`))
