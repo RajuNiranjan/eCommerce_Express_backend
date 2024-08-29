@@ -1,6 +1,7 @@
 import { UserModel } from "../model/user.model.js";
 import bcrypt from "bcryptjs";
 
+
 export const getUser = async (req, res) => {
   try {
     const userId = req.user.user;
@@ -59,3 +60,4 @@ export const UpdateUserProfile = async (req, res) => {
       .json({ message: "Internal server error during updating the user" });
   }
 };
+
