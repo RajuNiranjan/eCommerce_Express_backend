@@ -43,8 +43,8 @@ export const getAddress = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "user not found" })
 
-        const addresses = await AddressModel.find({ userId: id });
-        if (!addresses) return res.status(404).json({ message: "no addresses found" });
+        const addresses = await AddressModel.findOne({ userId: id });
+        if (!addresses) return res.status(404).json({ message: "Please add the address" });
         return res.status(200).json({ message: "Addresses fetched successfully", addresses: addresses });
 
     } catch (error) {
