@@ -67,7 +67,6 @@ export const updateAddress = async (req, res) => {
 }
 export const deleteAddress = async (req, res) => {
     const { id } = req.params;
-
     try {
         const add = await AddressModel.findById(id)
         console.log("adsf", add);
