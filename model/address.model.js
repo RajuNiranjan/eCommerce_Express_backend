@@ -26,6 +26,6 @@ const AddressSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     }
-}, { timestamps: true })
+}, { timestamps: true, collection: 'address' })
 
 export const AddressModel = mongoose.model("Address", AddressSchema)
