@@ -1,107 +1,66 @@
 import { AddressModel } from "../model/address.model.js";
-import { UserModel } from "../model/user.model.js";
-
-export const AddAddress = async (req, res) => {
-  const reqId = req.user.user;
-  console.log(reqId);
-  const { id } = req.params;
-
-  const { addressLine1, addressLine2, mobileNumber, landMark, doorNo, userId } =
-    req.body;
-
-  if (
-    !addressLine1 ||
-    !addressLine2 ||
-    !mobileNumber ||
-    !landMark ||
-    !doorNo ||
-    !userId
-  ) {
-    return res.status(400).json({ message: "all fields are required" });
-  }
-
+export const CreateAddress = async (req, res) => {
   try {
-    if (reqId === id) {
-      const user = await UserModel.findById(id);
+    const id = req.user.user
+    const existingAddress = await AddressModel.findOne({ userId: id })
 
-      if (!user) {
-        return res.status(404).json({ message: "user not found" });
-      }
+    if (existingAddress) return res.status(400).json({ message: "Address already exists for this user" });
 
-      const address = new AddressModel(req.body);
-      await address.save();
-      return res
-        .status(201)
-        .json({ message: "Address Added Successfully", address: address });
-    }
+    const newAddress = new AddressModel(req.body)
+    await newAddress.save()
 
-    return res.status(401).json({ message: "invalid token" });
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error during adding address" });
-  }
-};
+    return res.status(201).json({ message: "Address Added successfully", address: newAddress })
 
-export const getAddress = async (req, res) => {
-  const id = req.user.user;
-  if (!id) return res.status(401).json({ message: "invalid token" });
-  try {
-    const user = await UserModel.findById(id);
-
-    if (!user) return res.status(404).json({ message: "user not found" });
-
-    const addresses = await AddressModel.findOne({ userId: id });
-    if (!addresses)
-      return res.status(404).json({ message: "Please add the address" });
-    return res.status(200).json({
-      message: "Addresses fetched successfully",
-      addresses: addresses,
-    });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: "Internal server error during fetching address" });
+    res.status(500).json({ message: "Internal server error during creating address" })
   }
-};
-export const updateAddress = async (req, res) => {
-  const { id } = req.params;
+}
+
+export const getUserAddress = async (req, res) => {
   try {
-    const address = await AddressModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    if (!address) {
-      return res.status(404).json({ message: "address not found" });
-    }
-    return res
-      .status(200)
-      .json({ message: "Address Updated Successfully", address: address });
+    const id = req.user.user
+
+    const address = await AddressModel.findOne({ userId: id })
+
+    if (!address) return res.status(404).json({ message: "Please add the address" })
+
+    return res.status(200).json({ message: "Address found successfully", address: address })
+
   } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error during updating address" });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error during getting the address" })
   }
-};
-export const deleteAddress = async (req, res) => {
-  const { id } = req.params;
+}
+
+export const updateUserAddress = async (req, res) => {
   try {
-    const add = await AddressModel.findById(id);
-    console.log("adsf", add);
-    const address = await AddressModel.findByIdAndDelete(id);
-    console.log("addf", address);
-    if (!address) {
-      return res.status(404).json({ message: "address not found" });
-    }
-    return res
-      .status(200)
-      .json({ message: "Address deleted successfully", address: address });
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error during deleting address" });
+    const { id } = req.params
+
+    const address = await AddressModel.findByIdAndUpdate(id, req.body, { new: true })
+
+    if (!address) return res.status(404).json({ message: "Please add the address" })
+    return res.status(200).json({ message: "address updated successfully", address: address })
+
   }
-};
+  catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error during getting the address" })
+  }
+}
+
+export const DeleteUserAddress = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const address = await AddressModel.findOneAndDelete(id)
+
+    if (!address) return res.status(404).json({ message: "address not found" })
+
+    return res.status(200).json({ message: "address deleted successfully", address: address })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error during deleting the address" })
+  }
+}

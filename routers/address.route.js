@@ -1,15 +1,15 @@
 import express from "express";
 import {
-  AddAddress,
-  getAddress,
-  updateAddress,
-  deleteAddress,
+  CreateAddress,
+  DeleteUserAddress,
+  getUserAddress,
+  updateUserAddress,
 } from "../controllers/address.controller.js";
 import { VerifyToken } from "../utils/verifyToken.js";
 
 export const AddressRouter = express.Router();
 
-AddressRouter.post("/:id", VerifyToken, AddAddress);
-AddressRouter.get("/", VerifyToken, getAddress);
-AddressRouter.patch("/:id", updateAddress);
-AddressRouter.delete("/:id", deleteAddress);
+AddressRouter.post("/", VerifyToken, CreateAddress)
+AddressRouter.get('/', VerifyToken, getUserAddress)
+AddressRouter.patch('/:id', updateUserAddress)
+AddressRouter.delete('/:id', DeleteUserAddress)
