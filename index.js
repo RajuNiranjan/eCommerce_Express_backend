@@ -6,13 +6,13 @@ import { AuthRouter } from './routers/auth.router.js'
 import { UserRouter } from './routers/user.route.js'
 import { AddressRouter } from './routers/address.route.js'
 
-
+import { BecomeSellerRouter } from './routers/becomeSeller.route.js'
 
 const app = express()
 const PORT = ENV_VAR.PORT || 5000
 
 const corsOptions = {
-    origin: "http://localhost:3000",
+    origin: ENV_VAR.ORIGIN || "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ['Content-Type', "Authorization"]
 
@@ -29,6 +29,8 @@ app.get('/', (req, res) => {
 app.use('/api/auth', AuthRouter)
 app.use('/api/user', UserRouter)
 app.use("/api/address", AddressRouter)
+app.use('/api/seller', BecomeSellerRouter)
+
 
 
 app.listen(PORT, () => console.log(`server is running at port number: ${PORT}`))
