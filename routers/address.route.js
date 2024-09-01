@@ -9,7 +9,7 @@ import { VerifyToken } from "../utils/verifyToken.js";
 
 export const AddressRouter = express.Router();
 
-AddressRouter.post("/", VerifyToken, CreateAddress)
-AddressRouter.get('/', VerifyToken, getUserAddress)
-AddressRouter.patch('/:id', updateUserAddress)
-AddressRouter.delete('/:id', DeleteUserAddress)
+AddressRouter.post("/", VerifyToken, CreateAddress);
+AddressRouter.get("/", VerifyToken, getUserAddress);
+AddressRouter.patch("/:id", VerifyToken, updateUserAddress);
+AddressRouter.delete("/:id", VerifyToken, DeleteUserAddress);

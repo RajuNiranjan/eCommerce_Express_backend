@@ -1,6 +1,7 @@
 import { UserModel } from "../model/user.model.js";
+import { AddressModel } from "../model/address.model.js";
+import { BecomeSellerModel } from "../model/becomeSeller.model.js";
 import bcrypt from "bcryptjs";
-
 
 export const getUser = async (req, res) => {
   try {
@@ -61,3 +62,35 @@ export const UpdateUserProfile = async (req, res) => {
   }
 };
 
+export const UserInfo = async (req, res) => {
+  try {
+    const id = req.user.user;
+    const user = await UserModel.findById(id);
+    const address = await AddressModel.findOne({ userId: id });
+    const seller = await BecomeSellerModel.findOne({ userId: id });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const userResponse = { ...user._doc };
+    delete userResponse.password;
+
+    const sellerResponse = seller ? { ...seller._doc } : null;
+    if (sellerResponse) {
+      delete sellerResponse.storePassword;
+    }
+
+    res.status(200).json({
+      message: "userInfo fetched successfully",
+      user: userResponse,
+      address: address,
+      seller: sellerResponse,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Internal server error during getting the user info" });
+  }
+};
