@@ -11,5 +11,5 @@ export const BecomeSellerRouter = express.Router();
 
 BecomeSellerRouter.post("/", VerifyToken, CreateSeller);
 BecomeSellerRouter.get("/", VerifyToken, GetSeller);
-BecomeSellerRouter.patch("/:id", UpdateSeller);
-BecomeSellerRouter.delete("/:id", DeleteSeller);
+BecomeSellerRouter.patch("/:id", VerifyToken, UpdateSeller);
+BecomeSellerRouter.delete("/:id", VerifyToken, DeleteSeller);

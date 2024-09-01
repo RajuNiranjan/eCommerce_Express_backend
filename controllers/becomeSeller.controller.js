@@ -25,10 +25,8 @@ export const CreateSeller = async (req, res) => {
   }
 
   try {
-    const id = req.user.user;
-
     const existingSeller = await BecomeSellerModel.findOne({
-      $or: [{ userId: id }, { storeEmail: storeEmail }],
+      $or: [{ userId }, { storeEmail: storeEmail }],
     });
 
     if (existingSeller) {
@@ -86,7 +84,6 @@ export const UpdateSeller = async (req, res) => {
     storeAddress,
     storeDescription,
     storePassword,
-    userId,
   } = req.body;
 
   if (
@@ -95,28 +92,32 @@ export const UpdateSeller = async (req, res) => {
     !storeEmail ||
     !storeAddress ||
     !storeDescription ||
-    !storePassword ||
-    !userId
-  )
-    try {
-      const { id } = req.params;
-      const seller = await BecomeSellerModel.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
+    !storePassword
+  ) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
 
-      if (!seller)
-        return res
-          .status(404)
-          .json({ message: "You must become a seller to sell products" });
+  try {
+    const { id } = req.params;
+    const seller = await BecomeSellerModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+    if (!seller) {
       return res
-        .status(200)
-        .json({ message: "Seller updated successfully", seller: seller });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        message: "Internal server error during updating the seller",
-      });
+        .status(404)
+        .json({ message: "You must become a seller to sell products" });
     }
+
+    return res
+      .status(200)
+      .json({ message: "Seller updated successfully", seller: seller });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error during updating the seller",
+    });
+  }
 };
 
 export const DeleteSeller = async (req, res) => {
