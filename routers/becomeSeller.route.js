@@ -9,6 +9,7 @@ import { VerifyToken } from "../utils/verifyToken.js";
 
 export const BecomeSellerRouter = express.Router();
 
+
 BecomeSellerRouter.post("/", VerifyToken, CreateSeller);
 BecomeSellerRouter.get("/", VerifyToken, GetSeller);
 BecomeSellerRouter.patch("/:id", VerifyToken, UpdateSeller);

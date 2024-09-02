@@ -2,16 +2,13 @@ import { BecomeSellerModel } from "../model/becomeSeller.model.js";
 import bcrypt from "bcryptjs";
 
 export const CreateSeller = async (req, res) => {
-  const {
-    businessName,
+  const { businessName,
     storeName,
     storeEmail,
     storeAddress,
     storeDescription,
     storePassword,
-    userId,
-  } = req.body;
-
+    userId, } = req.body
   if (
     !businessName ||
     !storeName ||
@@ -19,41 +16,40 @@ export const CreateSeller = async (req, res) => {
     !storeAddress ||
     !storeDescription ||
     !storePassword ||
-    !userId
-  ) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
+    !userId) return res.status(401).json({ message: "All fields are required" })
   try {
-    const existingSeller = await BecomeSellerModel.findOne({
-      $or: [{ userId }, { storeEmail: storeEmail }],
-    });
+    const id = req.user.user
 
-    if (existingSeller) {
-      return res.status(409).json({
-        message: "A store is already registered with this user or email",
-      });
+    if (id === userId) {
+      const existingSeller = await BecomeSellerModel.findOne({ $or: [{ userId: id }, { storeEmail: storeEmail }] })
+
+      if (existingSeller) {
+        if (existingSeller.userId === id) {
+          return res.status(403).json({ message: "Seller is already registered with this user" })
+        } else if (existingSeller.storeEmail === storeEmail) {
+          return res.status(403).json({ message: "Seller is already registered with this email" })
+        }
+      }
+
+      const hashedPassword = await bcrypt.hash(storePassword, 12)
+      req.body.storePassword = hashedPassword;
+
+      const newSeller = new BecomeSellerModel(req.body)
+      await newSeller.save()
+      const sellerRes = newSeller._doc
+      delete sellerRes.storePassword
+      return res.status(201).json({ message: "seller registerd successfully", seller: sellerRes })
+
+    } else {
+      return res.status(404).json({ message: "Invalid token for to create seller" })
     }
 
-    const hashedPassword = await bcrypt.hash(storePassword, 12);
-
-    const newSeller = new BecomeSellerModel({
-      ...req.body,
-      storePassword: hashedPassword,
-    });
-
-    await newSeller.save();
-
-    return res
-      .status(201)
-      .json({ message: "Store created successfully", seller: newSeller });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: "Internal server error during creating seller" });
+    return res.status(500).json({ message: "Internal server error during Creating the seller" })
   }
-};
+}
+
 
 export const GetSeller = async (req, res) => {
   try {
@@ -65,9 +61,12 @@ export const GetSeller = async (req, res) => {
         .status(404)
         .json({ message: "You must become a seller to sell products" });
 
+    const sellerRes = seller._doc
+    delete sellerRes.storePassword
+
     return res
       .status(200)
-      .json({ message: "Seller found successfully", seller: seller });
+      .json({ message: "Seller found successfully", seller: sellerRes });
   } catch (error) {
     console.log(error);
     res
@@ -108,10 +107,11 @@ export const UpdateSeller = async (req, res) => {
         .status(404)
         .json({ message: "You must become a seller to sell products" });
     }
-
+    const sellerRes = seller._doc
+    delete sellerRes.storePassword
     return res
       .status(200)
-      .json({ message: "Seller updated successfully", seller: seller });
+      .json({ message: "Seller updated successfully", seller: sellerRes });
   } catch (error) {
     console.log(error);
     res.status(500).json({
