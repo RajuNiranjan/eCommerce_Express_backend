@@ -53,8 +53,8 @@ export const CreateSeller = async (req, res) => {
 
 export const GetSeller = async (req, res) => {
   try {
-    const id = req.user.user;
-    const seller = await BecomeSellerModel.findOne({ userId: id });
+    const id = req.params.id
+    const seller = await BecomeSellerModel.findById(id);
 
     if (!seller)
       return res
