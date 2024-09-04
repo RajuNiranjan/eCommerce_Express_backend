@@ -72,12 +72,12 @@ export const getUserAddress = async (req, res) => {
     const usersId = await UserModel.findById(id);
 
     const user = usersId._id.toString() === id;
-    console.log("users", user);
+
 
     if (user) {
       const address = await AddressModel.findOne({ userId: id });
 
-      console.log("address", address);
+
 
       if (!address)
         return res.status(404).json({ message: "Please add the address" });
