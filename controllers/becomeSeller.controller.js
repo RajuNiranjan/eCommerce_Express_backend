@@ -89,6 +89,22 @@ export const GetSeller = async (req, res) => {
   }
 };
 
+export const GetSellerById = async (req, res) => {
+  try {
+    const { id } = req.params
+    const seller = await BecomeSellerModel.findById(id)
+    if (!seller) return res.status(404).json({ message: "store not found" })
+    const sellerRes = seller._doc
+    delete sellerRes.storePassword
+    return res.status(200).json({ message: "store found successfully", seller: sellerRes })
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error during Creating the seller" });
+  }
+}
+
 export const UpdateSeller = async (req, res) => {
   const {
     businessName,
