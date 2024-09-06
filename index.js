@@ -5,7 +5,7 @@ import cors from 'cors'
 import { AuthRouter } from './routers/auth.router.js'
 import { UserRouter } from './routers/user.route.js'
 import { AddressRouter } from './routers/address.route.js'
-
+import { ProductRouter } from './routers/product.route.js'
 import { BecomeSellerRouter } from './routers/becomeSeller.route.js'
 
 const app = express()
@@ -30,6 +30,7 @@ app.use('/api/auth', AuthRouter)
 app.use('/api/user', UserRouter)
 app.use("/api/address", AddressRouter)
 app.use('/api/seller', BecomeSellerRouter)
+app.use('/api/product', ProductRouter)
 
 
 
