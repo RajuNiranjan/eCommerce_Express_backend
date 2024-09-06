@@ -86,4 +86,16 @@ export const getProductsByStoreId = async (req, res) => {
         return res.status(500).json({ message: "Internal server error while fetching products." });
     }
 }
-
+export const DeleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await ProductModel.findByIdAndDelete(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        return res.status(200).json({ message: "Product deleted successfully", product });
+    } catch (error) {
+        console.error("Error while deleting product:", error);
+        return res.status(500).json({ message: "Internal server error while deleting product." });
+    }
+};
