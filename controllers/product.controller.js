@@ -99,3 +99,13 @@ export const DeleteProduct = async (req, res) => {
         return res.status(500).json({ message: "Internal server error while deleting product." });
     }
 };
+
+export const GetAllProducts = async (req, res) => {
+    try {
+        const product = await ProductModel.find()
+        return res.status(200).json({ message: "Fetched all the products", products: product })
+    } catch (error) {
+        console.error("Error while deleting product:", error);
+        return res.status(500).json({ message: "Internal server error while fetching all product." });
+    }
+}
