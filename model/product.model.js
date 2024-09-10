@@ -37,6 +37,18 @@ const productSchema = new Schema({
         type: [String],
         default: []
     },
+    fabric: {
+        type: String,
+        required: true
+    },
+    brand: {
+        type: String,
+        required: true
+    },
+    saleType: {
+        type: String,
+        required: true
+    },
     userId: {
         type: String,
         ref: 'User',
