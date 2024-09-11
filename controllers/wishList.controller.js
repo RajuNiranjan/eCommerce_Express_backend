@@ -1,6 +1,6 @@
 import { WishListModel } from '../model/wishList.model.js'
 import { ProductModel } from '../model/product.model.js'
-import { json } from 'express'
+
 
 export const AddToWishList = async (req, res) => {
     const id = req.user.user
