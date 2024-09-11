@@ -7,6 +7,7 @@ import { UserRouter } from './routers/user.route.js'
 import { AddressRouter } from './routers/address.route.js'
 import { ProductRouter } from './routers/product.route.js'
 import { BecomeSellerRouter } from './routers/becomeSeller.route.js'
+import { WishListRouter } from './routers/wishList.route.js'
 
 const app = express()
 const PORT = ENV_VAR.PORT || 5000
@@ -31,6 +32,7 @@ app.use('/api/user', UserRouter)
 app.use("/api/address", AddressRouter)
 app.use('/api/seller', BecomeSellerRouter)
 app.use('/api/product', ProductRouter)
+app.use("/api/wishlist", WishListRouter)
 
 
 
