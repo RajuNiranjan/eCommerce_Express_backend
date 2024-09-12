@@ -1,27 +1,32 @@
-import { CartModel } from '../model/cart.model.js'
-import { ProductModel } from '../model/product.model.js'
-
+import { CartModel } from '../model/cart.model.js';
+import { ProductModel } from '../model/product.model.js';
 
 export const AddToCart = async (req, res) => {
     const id = req.user.user
-    const { userId, productId } = req.body
+    const { userId, productId, quantity, color, size } = req.body
+
     try {
+        if (id !== userId) {
+            return res.status(403).json({ message: "Invalid user" })
+        }
 
-        if (id === userId) {
+        const existingProduct = await CartModel.findOne({ productId })
 
-            const existedCartProduct = await CartModel.findOne({ userId, productId })
+        if (!existingProduct) {
+            const product = await ProductModel.findById(productId)
+            if (!product) return res.status(404).json({ message: "Product not found" })
 
-            if (!existedCartProduct) {
-                const product = await ProductModel.findById(productId)
-                if (!product) return res.status(404).json({ message: "Product not found" })
-                const CartItem = new CartModel({ userId, productId })
-                await CartItem.save()
-                return res.status(200).json({ message: "Product added to cart list successfully" })
-            } else {
-                return res.status(403).json({ message: "Product already existed in cart list" })
-            }
+            const cartItem = new CartModel({
+                productId,
+                userId,
+                quantity,
+                size,
+                color
+            })
+            await cartItem.save()
+            return res.status(200).json({ message: "Product Added To cart Successfully" })
         } else {
-            return res.status(401).json({ message: "Unauthorized access" })
+            return res.status(409).json({ message: "Product already existed in cart" })
         }
     } catch (error) {
         console.log(error);
@@ -29,42 +34,28 @@ export const AddToCart = async (req, res) => {
     }
 }
 
-export const GetCartItems = async (req, res) => {
+export const GetProducts = async (req, res) => {
     const id = req.user.user
     const { userId } = req.params
-
     try {
-        if (id === userId) {
-            const CartItems = await CartModel.find({ userId })
-            if (!CartItems) return res.status(404).json({ message: "No Cart items found" })
-
-            const productIds = CartItems.map(item => item.productId)
-            const products = await ProductModel.find({ _id: { $in: productIds } })
-
-            return res.status(200).json({ message: "Cart fetched successfully", Cart: products })
-        } else {
-            return res.status(401).json({ message: "Unauthorized access" });
-        }
+        if (id !== userId) return res.status(404).json({ message: "Invalid user" })
+        const cartItems = await CartModel.find({ userId })
+        return res.status(200).json({ message: "Cart Items Fetched Successfully", cartItems: cartItems })
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: "Internal server error during fetching the cart list" })
+        return res.status(500).json({ message: "Internal server error" })
     }
 }
-
-
-export const removeFromCart = async (req, res) => {
-    const user = req.user.user
+export const RemoveFromCart = async (req, res) => {
     const { userId, productId } = req.params
+
     try {
-        if (user === userId) {
-            const result = await CartModel.deleteOne({ userId, productId })
-            if (result.deletedCount === 0) return res.status(404).json({ message: "Cart item not found" })
-            return res.status(200).json({ message: "Cart item removed successfully" })
-        } else {
-            return res.status(401).json({ message: "Unauthorized access" })
-        }
+        const removeFromCart = await CartModel.deleteOne({ userId, productId })
+        if (removeFromCart.deletedCount === 0) return res.status(404).json({ message: "Cart item not found" })
+        return res.status(200).json({ message: "Item removed from cart successfully" })
+
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: "Internal server error during removing from the wish list" })
+        return res.status(500).json({ message: "Internal server error" })
     }
 }
