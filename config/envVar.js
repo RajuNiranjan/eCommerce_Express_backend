@@ -7,5 +7,5 @@ export const ENV_VAR = {
     PORT: process.env.PORT,
     JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
     JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
-    ORIGIN: process.env.ORIGIN
+    ORIGIN: process.env.ORIGIN || 'http://localhost:3000'
 }
