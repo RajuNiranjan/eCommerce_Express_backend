@@ -21,7 +21,8 @@ const corsOptions = {
 }
 
 app.use(express.json())
-app.use(cors(corsOptions))
+// app.use(cors(corsOptions))
+app.use(cors())
 
 
 app.get('/', (req, res) => {
@@ -36,6 +37,6 @@ app.use('/api/product', ProductRouter)
 app.use("/api/wishlist", WishListRouter)
 app.use("/api/cart", CartRouter)
 
-
+console.log("hello")
 
 app.listen(PORT, () => console.log(`server is running at port number: ${PORT}`))
