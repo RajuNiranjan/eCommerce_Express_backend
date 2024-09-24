@@ -2,7 +2,7 @@
 
 ### URL
 
-`https://trendsetdb.vercel.app/api`
+<a href="https://trendsetdb.vercel.app/api">https://trendsetdb.vercel.app/api</a>
 
 ## Table of Contents
 
