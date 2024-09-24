@@ -7,11 +7,11 @@
 ## Table of Contents
 
 - [Features](#features)
-- [Technologies](#technologies-used)
+- [Technologies](#technologies)
 - [API Endpoints](#api-endpoints)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
-- [Enveronmental Variables](#env)
+- [Enveronmental Variables](#enveronmental-variables)
 
 ## Features
 
@@ -88,13 +88,25 @@ The API is structured as follows:
 
 - clone the repository:
 
-`git clone https://github.com/RajuNiranjan/eCommerce_Express_backend`
+```
+git clone https://github.com/RajuNiranjan/eCommerce_Express_backend
+```
 
-`cd eCommerce_Express_backend`
+```
+cd eCommerce_Express_backend
+```
 
 - To Install the Dependencies
 
-`npm install`
+```
+npm install
+```
+
+- To Start The project
+
+```
+npm run dev
+```
 
 ## Enveronmental Variables
 
