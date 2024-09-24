@@ -1,20 +1,14 @@
-import mongoose from "mongoose";
 
-const becomeSellerSchema = new mongoose.Schema({
-  businessName: { type: String, required: true, unique: true },
-  storeName: { type: String, required: true, unique: true },
+import mongoose, { mongo, Schema } from "mongoose";
+
+const becomeSellecrSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, required: true },
+  bussinessName: { type: String, required: true },
+  storeName: { type: String, required: true },
   storeEmail: { type: String, required: true, unique: true },
   storeAddress: { type: String, required: true },
   storeDescription: { type: String, required: true },
   storePassword: { type: String, required: true },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    requiredd: true,
-  },
-});
+}, { timestamps: true })
 
-export const BecomeSellerModel = mongoose.model(
-  "BecomeSeller",
-  becomeSellerSchema
-);
+export const BecomeSellerModel = mongoose.model("BecomeSeller", becomeSellecrSchema)

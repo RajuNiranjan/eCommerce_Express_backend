@@ -1,9 +1,9 @@
 import { BecomeSellerModel } from "../model/becomeSeller.model.js";
-import bcrypt from "bcryptjs";
+
 
 export const CreateSeller = async (req, res) => {
   const {
-    businessName,
+    bussinessName,
     storeName,
     storeEmail,
     storeAddress,
@@ -12,57 +12,49 @@ export const CreateSeller = async (req, res) => {
     userId,
   } = req.body;
   if (
-    !businessName ||
+    !bussinessName ||
     !storeName ||
     !storeEmail ||
     !storeAddress ||
     !storeDescription ||
     !storePassword ||
     !userId
-  )
-    return res.status(401).json({ message: "All fields are required" });
+  ) {
+    return res.status(404).json({ message: "All fields are required" })
+  }
   try {
-    const id = req.user.user;
+    const id = req.user.user
 
-    if (id === userId) {
-      const existingSeller = await BecomeSellerModel.findOne({
-        $or: [{ userId: id }, { storeEmail: storeEmail }],
-      });
+    if (req.body.userId === id) {
+
+      const existingSeller = await BecomeSellerModel.findOne(
+
+        {
+          $or: [{ userId: req.body.userId }, { storeEmail: req.body.storeEmail }],
+        }
+      )
+
+
+
 
       if (existingSeller) {
-        if (existingSeller.userId === id) {
-          return res
-            .status(403)
-            .json({ message: "Seller is already registered with this user" });
-        } else if (existingSeller.storeEmail === storeEmail) {
-          return res
-            .status(403)
-            .json({ message: "Seller is already registered with this email" });
-        }
+
+        return res.status(403).json({ message: "the Store is already exited with this email or with user id" })
+      } else {
+        const newSeller = new BecomeSellerModel(req.body)
+        await newSeller.save()
+        return res.status(201).json({ message: "Seller registration successfully", seller: newSeller })
+
       }
-
-      const hashedPassword = await bcrypt.hash(storePassword, 12);
-      req.body.storePassword = hashedPassword;
-
-      const newSeller = new BecomeSellerModel(req.body);
-      await newSeller.save();
-      const sellerRes = newSeller._doc;
-      delete sellerRes.storePassword;
-      return res
-        .status(201)
-        .json({ message: "seller registerd successfully", seller: sellerRes });
     } else {
-      return res
-        .status(404)
-        .json({ message: "Invalid token for to create seller" });
+      return res.status(401).json({ message: "Invalid User" })
     }
   } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error during Creating the seller" });
+    console.log("while creating the seller error", error
+    );
+    return res.status(500).json({ message: "Internal server error during while Registering to Seller", })
   }
-};
+}
 
 export const GetSeller = async (req, res) => {
   try {
