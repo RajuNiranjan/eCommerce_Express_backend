@@ -2,7 +2,8 @@
 
 ### URL
 
-<a href="https://trendsetdb.vercel.app/">https://trendsetdb.vercel.app/</a>
+### [Live Demo](https://trendsetnext.vercel.app/)
+### [Front End source code](https://github.com/RajuNiranjan/ecommerce_next_frontend)
 
 ## Table of Contents
 
